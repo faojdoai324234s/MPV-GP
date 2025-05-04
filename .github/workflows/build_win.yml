@@ -84,6 +84,7 @@ jobs:
           copy libmpv-2.dll build\Debug
           copy libmpv-2.dll build\Release
           del libmpv-2.dll
+          mkdir D:\a\MPV-GP\MPV-GP
           
       - name: Upload artifact
         uses: actions/upload-artifact@v4
