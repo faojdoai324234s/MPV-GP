@@ -4,7 +4,6 @@ set( library_name MPVPlayer )
 
 project( ${library_name} CXX )
 
-set( QT_DIRECTORY "C:/Qt/Qt-5.15.16/lib/cmake/Qt5" )
 set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_CXX_STANDARD 17 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )

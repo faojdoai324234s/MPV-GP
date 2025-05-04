@@ -1,0 +1,95 @@
+name: Windows Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      
+env:
+  Qt_patch_version: 5.15.16
+  libmpv_link: https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20250504/mpv-dev-x86_64-v3-20250504-git-d702e5f.7z
+  sevenzip_location: C:\Program Files\7-Zip
+  
+jobs:
+  Build-Win:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: msys2/setup-msys2@v2
+      - name: Download Qt
+        shell: cmd
+        working-directory: C:\
+        run: |
+          mkdir Qt
+          mkdir MPVPlayer
+          git clone https://github.com/faojdoai324234s/Qt-Win-V2.git Qt
+          xcopy /y /v /s /e D:\a\MPV-GP\MPV-GP C:\MPVPlayer
+          rmdir /s /q D:\a\MPV-GP\MPV-GP
+          mkdir C:\MPVPlayer\include
+          mkdir C:\MPVPlayer\lib
+          
+      - name: Download libmpv
+        working-directory: C:\MPVPlayer
+        run: |
+          $AllProtocols = [System.Net.SecurityProtocolType]'Tls,Tls11,Tls12'
+          [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
+          
+          $ProgressPreference = 'SilentlyContinue'
+          $libmpv_archive_file = "C:\MPVPlayer\libmpv.7z"
+          Invoke-WebRequest -Uri ${{ env.libmpv_link }} -OutFile $libmpv_archive_file
+          
+      - name: Extract libmpv
+        working-directory: C:\MPVPlayer
+        shell: cmd
+        run: |
+          "${{ env.sevenzip_location }}\7z" x libmpv.7z
+          
+      - name: Install MSYS deps
+        working-directory: C:\MPVPlayer
+        shell: msys2 {0}
+        run: |
+          pacman --noconfirm -S mingw64/mingw-w64-x86_64-binutils mingw64/mingw-w64-x86_64-tools
+          
+      - name: Create DEF-files
+        working-directory: C:\MPVPlayer
+        shell: msys2 {0}
+        run: |
+          gendef - "C:\MPVPlayer\libmpv-2.dll" > "C:\MPVPlayer\libmpv.def"
+
+      - name: Create import library
+        working-directory: C:\MPVPlayer
+        shell: cmd
+        run: |
+          lib /def:libmpv.def /name:libmpv-2.dll /out:libmpv.lib /MACHINE:X64
+          copy libmpv.lib lib
+          
+      - name: Build application
+        shell: cmd
+        working-directory: C:\MPVPlayer
+        run: |
+          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}\lib\cmake\Qt5"
+          cmake --build build --config Debug
+          rmdir /s /q build
+          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}\lib\cmake\Qt5"
+          cmake --build build --config Release
+          
+      - name: Cleanup
+        shell: cmd
+        working-directory: C:\MPVPlayer
+        run: |
+          copy libmpv-2.dll build\Debug
+          copy libmpv-2.dll build\Release
+          del libmpv-2.dll
+          mkdir D:\a\MPV-GP\MPV-GP
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MPVPlayer
+          path: C:\MPVPlayer\build
+          if-no-files-found: ignore
+          retention-days: 0
