@@ -81,7 +81,6 @@ jobs:
         shell: cmd
         working-directory: C:\MPVPlayer
         run: |
-          copy libmpv-2.dll build\Debug
           copy libmpv-2.dll build\Release
           del libmpv-2.dll
           mkdir D:\a\MPV-GP\MPV-GP
@@ -90,6 +89,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MPVPlayer
-          path: C:\MPVPlayer\build
+          path: C:\MPVPlayer\build\Release
           if-no-files-found: ignore
           retention-days: 0
