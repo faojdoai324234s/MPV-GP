@@ -20,7 +20,9 @@ jobs:
       - name: Download dependencies
         shell: cmd
         run: |
-          git clone https://github.com/faojdoai324234s/Qt-Win-V2.git C:\
+          mkdir C:\Qt
+          git clone https://github.com/faojdoai324234s/Qt-Win-V2.git C:\Qt
+          dir C:\Qt
           ren Qt-Win-V2 Qt
           xcopy /y /v /s /e MVP-GP C:\
           rmdir /s /q MVP-GP
