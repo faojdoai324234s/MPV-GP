@@ -22,14 +22,11 @@ jobs:
         working-directory: C:\
         run: |
           mkdir Qt
+          mkdir MPVPlayer
           git clone https://github.com/faojdoai324234s/Qt-Win-V2.git Qt
-          dir Qt
-          xcopy /y /v /s /e D:\a\MPV-GP\MPV-GP C:\
+          xcopy /y /v /s /e D:\a\MPV-GP\MPV-GP C:\MPVPlayer
           rmdir /s /q D:\a\MPV-GP\MPV-GP
-          dir D:\a\MPV-GP
-          dir D:\a\MPV-GP\MPV-GP
-          dir C:\
-          dir C:\Qt
+          dir C:\MPVPlayer
           
       - name: Build library
         shell: cmd
