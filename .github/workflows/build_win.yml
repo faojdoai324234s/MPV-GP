@@ -19,14 +19,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Download dependencies
         shell: cmd
+        working-directory: C:\
         run: |
-          mkdir C:\Qt
-          git clone https://github.com/faojdoai324234s/Qt-Win-V2.git C:\Qt
-          dir C:\Qt
-          ren Qt-Win-V2 Qt
-          xcopy /y /v /s /e MVP-GP C:\
-          rmdir /s /q MVP-GP
-          dir
+          mkdir Qt
+          git clone https://github.com/faojdoai324234s/Qt-Win-V2.git Qt
+          dir Qt
+          xcopy /y /v /s /e D:\a\MPV-GP\MPV-GP C:\
+          rmdir /s /q D:\a\MPV-GP\MPV-GP
+          dir D:\a\MPV-GP
+          dir D:\a\MPV-GP\MPV-GP
           dir C:\
           dir C:\Qt
           
@@ -34,8 +35,8 @@ jobs:
         shell: cmd
         run: |
           agit clone https://github.com/faojdoai324234s/Qt-${{ env.platform }}.git
-          cmake -B build -D Qt5_DIR="Qt-${{ env.platform }}/Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
-          cmake --build build --config Debug
-          rmdir /s /q build
-          cmake -B build -D Qt5_DIR="Qt-${{ env.platform }}/Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
-          cmake --build build --config Release
+          acmake -B build -D Qt5_DIR="Qt-${{ env.platform }}/Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          acmake --build build --config Debug
+          armdir /s /q build
+          acmake -B build -D Qt5_DIR="Qt-${{ env.platform }}/Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          acmake --build build --config Release
