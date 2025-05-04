@@ -9,7 +9,6 @@ on:
       - main
       
 env:
-  platform: Win
   Qt_patch_version: 5.15.16
   
 jobs:
@@ -17,7 +16,7 @@ jobs:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
-      - name: Download dependencies
+      - name: Download Qt
         shell: cmd
         working-directory: C:\
         run: |
@@ -26,14 +25,20 @@ jobs:
           git clone https://github.com/faojdoai324234s/Qt-Win-V2.git Qt
           xcopy /y /v /s /e D:\a\MPV-GP\MPV-GP C:\MPVPlayer
           rmdir /s /q D:\a\MPV-GP\MPV-GP
-          dir C:\MPVPlayer
+          
+      - name: Download and build libmpv
+        shell: cmd
+        working-directory: C:\MPVPlayer
+        run: |
+          mkdir include
+          mkdir lib
           
       - name: Build library
         shell: cmd
+        working-directory: C:\MPVPlayer
         run: |
-          agit clone https://github.com/faojdoai324234s/Qt-${{ env.platform }}.git
-          acmake -B build -D Qt5_DIR="Qt-${{ env.platform }}/Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
-          acmake --build build --config Debug
-          armdir /s /q build
-          acmake -B build -D Qt5_DIR="Qt-${{ env.platform }}/Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
-          acmake --build build --config Release
+          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          cmake --build build --config Debug
+          rmdir /s /q build
+          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          cmake --build build --config Release
