@@ -10,6 +10,7 @@ on:
       
 env:
   Qt_patch_version: 5.15.16
+  libmpv_link: https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20250504/mpv-dev-x86_64-v3-20250504-git-d702e5f.7z
   
 jobs:
   Build-Win:
@@ -25,13 +26,18 @@ jobs:
           git clone https://github.com/faojdoai324234s/Qt-Win-V2.git Qt
           xcopy /y /v /s /e D:\a\MPV-GP\MPV-GP C:\MPVPlayer
           rmdir /s /q D:\a\MPV-GP\MPV-GP
+          mkdir C:\MPVPlayer\include
+          mkdir C:\MPVPlayer\lib
           
-      - name: Download and build libmpv
-        shell: cmd
+      - name: Download libmpv
         working-directory: C:\MPVPlayer
         run: |
-          mkdir include
-          mkdir lib
+          $AllProtocols = [System.Net.SecurityProtocolType]'Tls,Tls11,Tls12'
+          [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
+          
+          $ProgressPreference = 'SilentlyContinue'
+          $libmpv_archive_file = "C:\MPVPlayer\libmpv.7z"
+          Invoke-WebRequest -Uri ${{ env.libmpv_link }} -OutFile $libmpv_archive_file
           
       - name: Build library
         shell: cmd
