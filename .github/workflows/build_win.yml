@@ -18,6 +18,8 @@ jobs:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: msys2/setup-msys2@v2
       - name: Download Qt
         shell: cmd
         working-directory: C:\
@@ -45,14 +47,48 @@ jobs:
         shell: cmd
         run: |
           "${{ env.sevenzip_location }}\7z" x libmpv.7z
-          dir include
           
-      - name: Build library
+      - name: Install MSYS deps
+        working-directory: C:\MPVPlayer
+        shell: msys2 {0}
+        run: |
+          pacman --noconfirm -S mingw64/mingw-w64-x86_64-binutils mingw64/mingw-w64-x86_64-tools
+          
+      - name: Create DEF-files
+        working-directory: C:\MPVPlayer
+        shell: msys2 {0}
+        run: |
+          gendef - "C:\MPVPlayer\libmpv-2.dll" > "C:\MPVPlayer\libmpv.def"
+
+      - name: Create import library
+        working-directory: C:\MPVPlayer
+        shell: cmd
+        run: |
+          lib /def:libmpv.def /name:libmpv-2.dll /out:libmpv.lib /MACHINE:X64
+          copy libmpv.lib lib
+          
+      - name: Build application
         shell: cmd
         working-directory: C:\MPVPlayer
         run: |
-          acmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
-          acmake --build build --config Debug
-          armdir /s /q build
-          acmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
-          acmake --build build --config Release
+          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          cmake --build build --config Debug
+          rmdir /s /q build
+          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          cmake --build build --config Release
+          
+      - name: Cleanup
+        shell: cmd
+        working-directory: C:\MPVPlayer
+        run: |
+          copy libmpv-2.dll build\Debug
+          copy libmpv-2.dll build\Release
+          del libmpv-2.dll
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MPVPlayer
+          path: C:\MPVPlayer\build
+          if-no-files-found: ignore
+          retention-days: 0
