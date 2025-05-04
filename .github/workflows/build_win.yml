@@ -83,6 +83,10 @@ jobs:
         run: |
           copy libmpv-2.dll build\Release
           del libmpv-2.dll
+          copy C:\Qt\Qt-${{ env.Qt_patch_version }}\bin\Qt5Core.dll build\Release
+          copy C:\Qt\Qt-${{ env.Qt_patch_version }}\bin\Qt5Gui.dll build\Release
+          copy C:\Qt\Qt-${{ env.Qt_patch_version }}\bin\Qt5OpenGL.dll build\Release
+          copy C:\Qt\Qt-${{ env.Qt_patch_version }}\bin\Qt5Widgets.dll build\Release
           mkdir D:\a\MPV-GP\MPV-GP
           
       - name: Upload artifact
