@@ -31,6 +31,7 @@ jobs:
           mkdir C:\MPVPlayer\lib
           
       - name: Download libmpv
+        working-directory: C:\MPVPlayer
         run: |
           $AllProtocols = [System.Net.SecurityProtocolType]'Tls,Tls11,Tls12'
           [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
