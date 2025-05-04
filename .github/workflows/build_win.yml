@@ -1,0 +1,39 @@
+name: Windows Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      
+env:
+  platform: Win
+  Qt_patch_version: 5.15.16
+  
+jobs:
+  Build-Win:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download dependencies
+        shell: cmd
+        run: |
+          git clone https://github.com/faojdoai324234s/Qt-Win-V2.git C:\
+          ren Qt-Win-V2 Qt
+          xcopy /y /v /s /e MVP-GP C:\
+          rmdir /s /q MVP-GP
+          dir
+          dir C:\
+          dir C:\Qt
+          
+      - name: Build library
+        shell: cmd
+        run: |
+          agit clone https://github.com/faojdoai324234s/Qt-${{ env.platform }}.git
+          cmake -B build -D Qt5_DIR="Qt-${{ env.platform }}/Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          cmake --build build --config Debug
+          rmdir /s /q build
+          cmake -B build -D Qt5_DIR="Qt-${{ env.platform }}/Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          cmake --build build --config Release
