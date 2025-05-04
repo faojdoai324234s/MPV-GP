@@ -43,7 +43,7 @@ jobs:
       - name: Extract libmpv
         working-directory: C:\MPVPlayer
         run: |
-          "${{ env.sevenzip_location }}\7z" x libmpv.7z
+          "${{ env.sevenzip_location }}\7z" x libmpv.7z -oC:\MPVPlayer
           dir include
           
       - name: Build library
