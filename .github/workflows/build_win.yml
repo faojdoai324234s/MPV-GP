@@ -71,10 +71,10 @@ jobs:
         shell: cmd
         working-directory: C:\MPVPlayer
         run: |
-          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}\lib\cmake\Qt5"
           cmake --build build --config Debug
           rmdir /s /q build
-          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}/lib/cmake/Qt5"
+          cmake -B build -D Qt5_DIR="C:\Qt\Qt-${{ env.Qt_patch_version }}\lib\cmake\Qt5"
           cmake --build build --config Release
           
       - name: Cleanup
