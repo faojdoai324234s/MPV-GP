@@ -60,7 +60,6 @@ void MainWindow::openMedia() {
 	for (int i = 1; i < 11; i++) {
 		const QString newFile = filePath + QStringLiteral("/") + baseName + QString::number(i) + QStringLiteral(".") + suffix;
 		if (QFileInfo::exists(newFile)) {
-			const std::string a = newFile.toStdString();
 			m_mpv->command(QStringList() << "loadfile" << newFile << "append");
 		}
 	}
